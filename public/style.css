@@ -1,38 +1,40 @@
 body{
     margin:0px;
-    color:aqua;
-    background-color: brown;
+    padding: 0px;
 }
 p{
     text-align: center;
     text-decoration: solid;
-    color: aqua;
-    /* background-color: rgb(201, 182, 219); */
 }
 .container{
     font-family: serif;
-    /* background-color: rgba(204, 235, 171, 0.323); */
+ 
 }
 body{
     font-family: serif;
     margin:0px;
     padding: 0px;
-    /* color:aqua; */
+   
 }
 p{
     text-align: center;
     text-decoration: solid;
     color: rgb(20, 23, 23);
-    /* background-color: rgb(200, 188, 212); */
+   
 }
 footer{
+  position: fixed;
     align-items: center;
     justify-content: center;
     font-family: sans-serif;
     font-weight: 200;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: #ccc;
     text-align: center;
-    margin-bottom: 8px;
-    background-color: aqua;
+    /* background-color: aqua; */
+    bottom: 0;
 }
 .background-radial-gradient {
     background-color: hsl(218, 41%, 15%);

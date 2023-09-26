@@ -10,6 +10,8 @@ router.get('/dashboards', ensureAuthenticated,(req, res,next)=>{res.render('dash
 
 router.get('/profile',(req,res)=>res.render('profile',{user:req.user}));
 
+router.get('/personal_post',ensureAuthenticated,(req,res,next)=>res.render('personal_post',{user:req.user}));
+
 
 
 module.exports=router;

@@ -14,6 +14,9 @@ router.get('/login',checkNotauthenticated,(req,res)=>res.render('login'));
 router.get('/register',checkNotauthenticated,(req,res)=>res.render('register'));
 router.get('/welcome',(req,res)=>res.render('welcome',{user:req.session.user}));
 
+//post_page
+router.get('/personal_post',(req,res)=>res.render('personal_post',{user:req.user}));
+
 
 
 
@@ -88,6 +91,10 @@ router.post('/register',checkNotauthenticated,async(req,res)=>{
         });
     }
 });
+router.post('/personal_post',checkauthenticated,(req,res,next)=>{
+    const { content } = req.body;
+    res.send("post created success")
+})
 
 router.post('/login',checkNotauthenticated,(req,res,next)=>{
         passport.authenticate('local',{
