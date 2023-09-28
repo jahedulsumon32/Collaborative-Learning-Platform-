@@ -8,14 +8,25 @@ const emailValidator = require('deep-email-validator');
 
 // load user model
 const User=require('../models/User');
+const Post=require('../models/Post');
 // Login page
 router.get('/login',checkNotauthenticated,(req,res)=>res.render('login'));
 // register page
 router.get('/register',checkNotauthenticated,(req,res)=>res.render('register'));
-router.get('/welcome',(req,res)=>res.render('welcome',{user:req.session.user}));
+router.get('/welcome',async(req,res)=>{
+    try {
+        const posts = await Post.find().populate('user', 'name').sort({ timestamp: -1 });
+        res.render('welcome', { posts,user:req.user});
+      } catch (error) {
+        console.log(error)
+        res.status(500).send('Error fetching posts');
+      }
+});
 
 //post_page
-router.get('/personal_post',(req,res)=>res.render('personal_post',{user:req.user}));
+router.get('/post',(req,res)=>{
+    res.render('post',{user:req.user});
+});
 
 
 
@@ -91,9 +102,21 @@ router.post('/register',checkNotauthenticated,async(req,res)=>{
         });
     }
 });
-router.post('/personal_post',checkauthenticated,(req,res,next)=>{
-    const { content } = req.body;
-    res.send("post created success")
+router.post('/post',checkauthenticated,async(req,res,next)=>{
+    try {
+        const { title, desc } = req.body;
+        const newPost = new Post({
+        title,
+        desc,
+        user: req.user._id, // Associate the post with the user's ID
+      });
+      await newPost.save();
+      res.redirect('/welcome');
+    } catch (error) {
+      res.status(500).send('Error creating post');
+    }
+
+    // res.send("post created success")
 })
 
 router.post('/login',checkNotauthenticated,(req,res,next)=>{
