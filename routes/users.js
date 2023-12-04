@@ -13,10 +13,10 @@ const Post=require('../models/Post');
 router.get('/login',checkNotauthenticated,(req,res)=>res.render('login'));
 // register page
 router.get('/register',checkNotauthenticated,(req,res)=>res.render('register'));
-router.get('/welcome',async(req,res)=>{
+router.get('/welcome',checkauthenticated,async(req,res)=>{
     try {
         const posts = await Post.find().populate('user', 'name').sort({ timestamp: -1 });
-        res.render('welcome', { posts,user:req.user});
+        res.render('welcome', { 'posts':posts,user:req.user});
       } catch (error) {
         console.log(error)
         res.status(500).send('Error fetching posts');
@@ -133,7 +133,7 @@ router.post('/login',checkNotauthenticated,(req,res,next)=>{
 router.get('/logout',(req,res)=>{
         req.logout(()=>{});
         req.flash('success_msg','You are logged out')
-        res.redirect('/welcome');
+        res.redirect('/users/login');
 });
 function checkauthenticated(req,res,next){
     if(req.isAuthenticated()){

@@ -7,6 +7,12 @@ const flash=require('express-flash')
 const session=require('express-session')
 const passport=require('passport')
 const app=express();
+
+
+//for real time chat including a library socket.io
+
+// const server = http.createServer(app);
+// const io = socketIO(server);
 // passport config
 
 require('./config/passport')(passport);
@@ -34,7 +40,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-// Global variables
+// Global variables that will save different error msg and success message
 app.use((req,res,next)=>{
     res.locals.success_msg=req.flash('success_msg')
     res.locals.error_msg=req.flash('error_msg')
@@ -47,8 +53,8 @@ app.use((req,res,next)=>{
 
 
 
-// Routes
+// Routes are defined 
 app.use('/',require('./routes/index.js'));
 app.use('/users',require('./routes/users.js'));
-const PORT=process.env.PORT||8080
+  const PORT=process.env.PORT||8080
 app.listen(PORT,console.log(`Server started on port ${PORT}`));
