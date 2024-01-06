@@ -10,6 +10,12 @@ user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+ // a blog post can have multiple comments, so it should be in a array.
+         // all comments info should be kept in this array of this blog post.
+         comments:{
+            type:Object,
+            default:{}
+        },
 date:{
     type:Date,
     default:Date.now

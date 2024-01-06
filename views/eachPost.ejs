@@ -1,0 +1,128 @@
+<%- include('./partials/home_nav.ejs')%>
+<!-- Page content-->
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-lg-8">
+      <!-- Post content-->
+      <article>
+        <!-- Post header-->
+        <header class="mb-4">
+          <!-- Post title-->
+          <h1 class="fw-bolder mb-1"><%- post.title %></h1>
+        </header>
+        <!-- Post content-->
+        <section class="mb-5">
+          <p class="fs-5 mb-4"><%- post.desc %></p>
+        </section>
+      </article>
+    </div>
+  </div>
+</div>
+<!-- like dislike icons start -->
+<div class="container mt-3">
+  <div style="font-size: 20px">
+    <div class="row">
+      <div class="col-md-1">
+        <i class="fa fa-thumbs-up"></i>
+        <span id="like"><%= likes %></span>
+      </div>
+      <div class="col-md-1">
+        <i class="fa fa-thumbs-down"></i>
+        <span id="dislike"><%= dislikes %></span>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Comments section-->
+<div class="container mt-3">
+  <section class="mb-5 mt-3">
+    <div class="card bg-light">
+      <div class="card-body">
+        <!-- Comment form-->
+        <h5>Leave a comment</h5>
+        <form class="mb-4" id="comment-form">
+          <input type="hidden" name="post_id" value="<%= post._id %>" />
+          <input
+            type="text"
+            name="username"
+            placeholder="Enter your name"
+            required
+            class="form-control mb-3"
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter your mail"
+            required
+            class="form-control mb-3"
+          />
+
+          <textarea
+            class="form-control"
+            name="comment"
+            required
+            rows="3"
+            placeholder="Join the discussion and leave a comment!"
+          ></textarea>
+
+          <input type="submit" class="btn btn-primary mt-3" />
+        </form>
+
+        <p class="com-status" style="color: green"></p>
+      </div>
+
+      <!-- like dislike icons end -->
+      <!-- <%- include('./partials/footer.ejs')%> -->
+      <script>
+        //import socket for real time update data
+        let socket = io();
+        let post_id = "<%=post._id%>";
+        let post_user_id = "<%=user.id%>";
+        $(document).ready(function () {
+          $("#comment-form").submit(function (event) {
+            event.preventDefault();
+            var formData = {};
+
+            $.ajax({
+              url: "/users/add-comment",
+              type: "POST",
+              data: formData,
+              success: function (data) {
+                formData._id = data._id;
+
+                // socket.emit("new_comment",formData);
+
+                $(".com-status").text(data.msg);
+                setTimeout(function () {
+                  $(".com-status").text("");
+                }, 5000);
+              },
+            });
+          });
+          if (post_user_id == null) {
+            //realtime like-dislike start
+            console.log(user.id);
+            $(".fa-thumbs-up").addClass("disabled");
+            $(".fa-thumbs-down").addClass("disabled");
+          }
+
+          $(".fa-thumbs-up").click(function () {
+            socket.emit("like", { post_id: post_id, user_id: post_user_id });
+          });
+
+          $(".fa-thumbs-down").click(function () {
+            socket.emit("dislike", { post_id: post_id, user_id: post_user_id });
+          });
+
+          socket.on("like_dislike", function (data) {
+            if (post_id == data.post_id) {
+              $("#like").text(data.likes);
+              $("#dislike").text(data.dislikes);
+            }
+          });
+          //realtime like-dislike end
+        });
+      </script>
+    </div>
+  </section>
+</div>

@@ -1,36 +1,20 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create-Post</title>
-    <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="https://bootswatch.com/4/journal/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    
-</head>
-<body>
 <%- include('./partials/home_nav.ejs')%>
-<% if(posts.length>0){%>
-    <% posts.forEach(post=>{%>
+<% if(postData.length>0){%>
+  <!-- postData=postData.reverse(); -->
+    <% postData.forEach(data=>{%>
 <div class="container mt-5 mb-5">
   <div class="row d-flex align-items-center justify-content-center">
       <div class="col-md-6">
           <div class="card">
               <div class="d-flex justify-content-between p-2 px-3">
                   <div class="d-flex flex-row align-items-center"> <img src="https://bootdey.com/img/Content/avatar/avatar7.png" width="50" class="rounded-circle">
-                      <div class="d-flex flex-column ml-2"> <span class="font-weight-bold"><%=post.user.name%></span> <small class="text-primary">Collegues</small> </div>
+                      <div class="d-flex flex-column ml-2"> <span class="font-weight-bold"><%=data.post.user.name%></span> <small class="text-primary">Collegues</small> </div>
                   </div>
                   <div class="d-flex flex-row mt-1 ellipsis"> 
                     <small class="mr-2">
-                        <span class="post-time" data-timestamp="<%= post.date %>">
-                          <%= post.date.toDateString() %>
+                        <span class="post-time" data-timestamp="<%= data.post.date %>">
+                          <%= data.post.date.toDateString() %>
                         </span>
                       </small>
                       
@@ -38,37 +22,32 @@
               </div>
               
               <div class="p-2">
-                <% if (post.desc.length <= 150) { %>
+                <% if (data.post.desc.length <= 150) { %>
                     <!-- If the description is 50 characters or less, display it entirely -->
-                    <p class="text-justify"><%= post.desc %></p>
+                    <p class="text-justify"><%=data.post.desc %></p>
                   <% } else { %>
                     <!-- If the description is longer than 50 characters, display the first 50 characters -->
-                    <p class="text-justify" data-desc="<%= post.desc %>"><%= post.desc.slice(0, 150) %></p>
+                    <p class="text-justify" data-desc="<%= data.post.desc %>"><%= data.post.desc.slice(0, 150) %></p>
                     <!-- Include a "See More" button to expand the description -->
-                    <button class="see-more-button">...See More</button>
+                    <button class="see-more-button"><a href="/eachPost/<%=data.post._id%>">...See More</a></button>
                   <% } %>
                 
                   <hr>
                   <div class="d-flex justify-content-between align-items-center">
-                      <div class="d-flex flex-row icons d-flex align-items-center"> <i class="fa fa-heart"></i> <i class="fa fa-smile-o ml-2"></i> </div>
+                      <div class="d-flex flex-row icons d-flex align-items-center">
+                        <i class="fa fa-thumbs-up mx-2"></i>
+                        <span id="like_<%= data.post._id %>"><%= data.likeCount %></span>     
+                        <i class="fa fa-thumbs-down mx-2"></i>
+                        <span id="dislike_<%=data.post_id%>"><%= data.dislikeCount %></span>
+                        </div>
                       <div class="d-flex flex-row muted-color"> <span>2 comments</span> <span class="ml-2">Share</span> </div>
                   </div>
                   <hr>
-                  <div class="comments">
-                      <!-- <div class="d-flex flex-row mb-2"> <img src="https://i.imgur.com/9AZ2QX1.jpg" width="40" class="rounded-image">
-                          <div class="d-flex flex-column ml-2"> <span class="name">Daniel Frozer</span> <small class="comment-text">I like this alot! thanks alot</small>
-                              <div class="d-flex flex-row align-items-center status"> <small>Like</small> <small>Reply</small> <small>Translate</small> <small>18 mins</small> </div>
-                          </div>
-                      </div>
-                      <div class="d-flex flex-row mb-2"> <img src="https://i.imgur.com/1YrCKa1.jpg" width="40" class="rounded-image">
-                          <div class="d-flex flex-column ml-2"> <span class="name">Elizabeth goodmen</span> <small class="comment-text">Thanks for sharing!</small>
-                              <div class="d-flex flex-row align-items-center status"> <small>Like</small> <small>Reply</small> <small>Translate</small> <small>8 mins</small> </div>
-                          </div>
-                      </div> -->
+
                       <div class="comment-input"> 
                         
-                        <input type="text" class="form-control" placeholder="write a comment">
-                          <div class="fonts"> <i class="fa fa-paper-plane"></i> </div>
+                        <input type="text" class="form-control" placeholder="write a comment" id="commentInput_<%= data.post.id %>">
+                          <div class="fonts"><button class="btn" onclick="addComment('<%= data.post.id %>')"> <i class="fa fa-paper-plane"></i></button></div>
                       </div>
                   </div>
               </div>
@@ -81,43 +60,32 @@
             <p class="post-content">There is nothing to show</p>
             <% }%>
   <%- include('./partials/footer.ejs')%>
-  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+            
   <script>
-    var quill = new Quill('#editor', {
-      theme: 'snow',
-      modules: {
-        toolbar: [
-          [{ header: [1, 2, false] }],
-          ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          ['link', 'image'],
-          ['clean'],
-        ],
-      },
-    });
-   document.querySelectorAll('.see-more-button').forEach(function (button) {
-  button.addEventListener('click', function () {
-    const paragraphElement = this.previousElementSibling; // Get the previous sibling of the clicked button, which is the <p> element
-    if (paragraphElement) {
-      const fullDescription = paragraphElement.getAttribute('data-desc');
-      const currentState = paragraphElement.getAttribute('data-state'); // Get the current state
+    
+//    document.querySelectorAll('.see-more-button').forEach(function (button) {
+//   button.addEventListener('click', function () {
+//     const paragraphElement = this.previousElementSibling; // Get the previous sibling of the clicked button, which is the <p> element
+//     if (paragraphElement) {
+//       const fullDescription = paragraphElement.getAttribute('data-desc');
+//       const currentState = paragraphElement.getAttribute('data-state'); // Get the current state
 
-      if (currentState === 'collapsed') {
-        // If it's currently collapsed, expand it
-        paragraphElement.textContent = fullDescription;
-        paragraphElement.setAttribute('data-state', 'expanded');
-        button.textContent = 'Show Less'; // Change the button text
-      } else {
-        // If it's currently expanded, collapse it
-        paragraphElement.textContent = fullDescription.slice(0, 150);
-        paragraphElement.setAttribute('data-state', 'collapsed');
-        button.textContent = '...See More'; // Change the button text
-      }
-    } else {
-      console.error('Paragraph element not found');
-    }
-  });
-});
+//       if (currentState === 'collapsed') {
+//         // If it's currently collapsed, expand it
+//         paragraphElement.textContent = fullDescription;
+//         paragraphElement.setAttribute('data-state', 'expanded');
+//         button.textContent = 'Show Less'; // Change the button text
+//       } else {
+//         // If it's currently expanded, collapse it
+//         paragraphElement.textContent = fullDescription.slice(0, 150);
+//         paragraphElement.setAttribute('data-state', 'collapsed');
+//         button.textContent = '...See More'; // Change the button text
+//       }
+//     } else {
+//       console.error('Paragraph element not found');
+//     }
+//   });
+// });
 
   // Function to format and update the posting time
   function updatePostingTime() {
@@ -135,10 +103,14 @@
       const minutes = Math.floor(seconds / 60);
       const hours = Math.floor(minutes / 60);
       const days = Math.floor(hours / 24);
+     // const month = Math.floor(days / 30)
 
       let formattedTime = '';
-
-      if (days > 0) {
+      // if(month>0){
+      //   formattedTime=`${month}`;
+      // }
+      // else
+       if (days > 0) {
         formattedTime = `${days}d`;
       } else if (hours > 0) {
         formattedTime = `${hours}h`;
@@ -159,12 +131,10 @@
   // Periodically update posting times (e.g., every minute)
   setInterval(updatePostingTime, 60000); // Update every minute
 
-
-
-
+ 
+   
   </script>
-</body>
-</html>
+
   
    
     

@@ -17,6 +17,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-flash": "^0.0.2",
     "express-session": "^1.17.3",
+    "mongodb": "^6.3.0",
     "mongoose": "^7.4.2",
     "mysql": "^2.18.1",
     "passport": "^0.6.0",
