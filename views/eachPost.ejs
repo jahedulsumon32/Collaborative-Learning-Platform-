@@ -4,14 +4,25 @@
   <div class="row">
     <div id="container">
       <button id="blueButton">Summarize the blog</button>
+      <!-- Include api.js directly -->
+      <script src="/api.js"></script>
+
+      <!-- Include Axios from CDN -->
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
       <script>
-        document
-          .getElementById("blueButton")
-          .addEventListener("click", function () {
-            // Add your axios function call here
-            alert("Button Clicked!");
-            console.log("After alert");
-          });
+        const postDesc = `<%- post.desc %>`;
+        const blueButton = document.getElementById("blueButton");
+
+        blueButton.addEventListener("click", async function () {
+          try {
+            console.log("Calling fetchData with postDesc:", postDesc);
+            const st = await fetchData(postDesc);
+            console.log("FetchData response:", st);
+            alert(st);
+          } catch (err) {
+            console.error("Error in fetchData:", err);
+          }
+        });
       </script>
     </div>
     <div class="col-lg-8">
