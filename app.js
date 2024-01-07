@@ -11,6 +11,7 @@ const http = require('http').createServer(app);
 const { Server } = require('socket.io');
 const io = new Server(http,{});
 const Like = require('./models/Like');
+const {ObjectId}=require('mongodb')
 require('./config/passport')(passport);
 
 // Database configure
@@ -54,11 +55,19 @@ app.use((req,res,next)=>{
 app.use('/',require('./routes/index.js'));
 app.use('/users',require('./routes/users.js'));
 
-const { ObjectID } = require('mongodb');
 
 
 io.on("connection",function(socket){
   console.log('User Connected');
+
+  socket.on("new_comment",function(comment){
+    io.emit("new_comment",comment);
+});
+
+socket.on("new_reply",function(reply){
+    io.emit("new_reply",reply);
+});
+
   socket.on("like", async function(data){
     await Like.updateOne({
         post_id:data.post_id,
