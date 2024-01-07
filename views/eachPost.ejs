@@ -57,13 +57,16 @@
   </div>
 </div>
 <!-- Comments section-->
+
+
 <div class="container mt-3">
   <section class="mb-5 mt-3">
     <div class="card bg-light">
       <div class="card-body">
         <!-- Comment form-->
-        <h5>Leave a comment</h5>
-        <form class="mb-4" id="comment-form">
+        <!-- Show/Hide Comment Form button -->
+        <button id="show-comment-form" class="btn btn-primary mt-3">Add a Comment</button>
+        <form class="mb-4" id="comment-form" style="display:none;">
           <input type="hidden" name="post_id" value="<%= post._id %>" />
           <input
             type="text"
@@ -92,7 +95,74 @@
         </form>
 
         <p class="com-status" style="color: green"></p>
+     
+
+      <!-- Comment with nested comments-->
+      <div id="comment-section">
+        <% 
+            if(post.comments.length >= 0){
+                post.comments = post.comments.reverse();
+                post.comments.forEach(function(comment){
+                    %>
+                    <div class="d-flex mt-3">
+                        <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                        <div class="ms-3">
+                            <div class="fw-bold"><%= comment.username %></div>
+                            <%= comment.comment %>
+                       
+                    <div id="replies-<%= comment._id %>">
+                      <%
+                          if(comment.replies){
+                              comment.replies.forEach(function(reply){
+                                  %>
+                                  <div class="d-flex mt-3 mb-3">
+                                      <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                                      <div class="ms-3">
+                                          <div class="fw-bold"><%= reply.name %></div>
+                                          <%= reply.reply %>
+                                      </div>
+                                  </div>
+                                  <%
+                              });
+                          }
+                      %>
+                      </div>
+                      <button id="show-reply-form" class="btn btn-info  btn-sm mt-3">reply</button>
+                      <div class="col-md-12">
+                        <!-- Show/Hide reply Form button -->
+                       
+                          <form class="do-reply" id="reply-form" style="display:none;">
+                              <input type="hidden" name="post_id" value="<%= post._id %>">
+                              <input type="hidden" name="comment_id" value="<%= comment._id %>">
+                              <input type="hidden" name="comment_email" value="<%= comment.email %>">
+                              <div class="form-group">
+                                  <input type="text" class="form-control" name="name" placeholder="Enter Name" required>
+                              </div>
+                              <div class="form-group">
+                                  <textarea class="form-control" name="reply" placeholder="Enter Reply" required></textarea>
+                              </div>
+                              <input type="submit" value="Reply" class="btn btn-info btn-sm">
+                          </form>
+                          <p class="reply-status" style="color: green"></p>
+                        
+                    </div>
+
+                  </div>
+                </div>
+      
+              
+                
+          <%
+        });
+      }
+
+    %>
       </div>
+      </div>
+    </div>
+  </section>
+</div>
+
 
       <!-- like dislike icons end -->
       <!-- <%- include('./partials/footer.ejs')%> -->
@@ -102,10 +172,17 @@
         let post_id = "<%=post._id%>";
         let post_user_id = "<%=user.id%>";
         $(document).ready(function () {
+             // Show/Hide Comment Form button click event
+                $("#show-comment-form").click(function () {
+                $("#comment-form").toggle();
+                });
           $("#comment-form").submit(function (event) {
             event.preventDefault();
             var formData = {};
-
+            $.each($(this).serializeArray(),function(i, field){
+                formData[field.name] = field.value;
+            });
+            var obj = $(this);
             $.ajax({
               url: "/users/add-comment",
               type: "POST",
@@ -113,17 +190,90 @@
               success: function (data) {
                 formData._id = data._id;
 
-                // socket.emit("new_comment",formData);
-
+                socket.emit("new_comment",formData);
+                $(obj)[0].reset();
                 $(".com-status").text(data.msg);
                 setTimeout(function () {
                   $(".com-status").text("");
-                }, 5000);
+                }, 1000);
               },
             });
           });
+
+          //  // Clear the form after successful submission
+          //  $("#comment-form")[0].reset();
+        //realtime comment show
+        socket.on("new_comment",function(comment){
+
+          var html ='';
+
+          html +=`
+          <div class="d-flex mt-3">
+              <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+              <div class="ms-3">
+                  <div class="fw-bold">`+comment.username+`</div>
+                  `+comment.comment+`
+              </div>
+          </div>
+          `;
+          $('#comment-section').prepend(html);
+          });
+
+          // Show/Hide Comment Form button click event
+          $("#show-reply-form").click(function () {
+                $("#reply-form").toggle();
+                });
+
+        $('.do-reply').submit(function(event){
+          
+        event.preventDefault();
+
+        var formData = {};
+        $.each($(this).serializeArray(),function(i,field){
+            formData[field.name] = field.value;
+        });
+
+        var obj = $(this);
+        $.ajax({
+            url:"/users/do-reply",
+            type:"POST",
+            data:formData,
+            success:function(data){
+
+                formData._id = data._id;
+                socket.emit("new_reply",formData);
+
+                $(obj)[0].reset();
+                // $(obj).parent().parent().append('<p>'+data.msg+'</p>');
+                $(".reply-status").text(data.msg);
+                        setTimeout(function () {
+                          $(".reply-status").text("");
+                        }, 1000);
+                
+            }
+        });
+        });
+
+
+        socket.on("new_reply",function(reply){
+        console.log(reply)
+        var html = "";
+        html +=`
+        <div class="container d-flex mt-3 mb-3">
+            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+            <div class="ms-3">
+                <div class="fw-bold">`+reply.name+`</div>
+                `+reply.reply+`
+            </div>
+        </div>
+        `;
+        $('#replies-'+reply.comment_id).append(html);
+        });
+
+
+     //realtime like-dislike start
           if (post_user_id == null) {
-            //realtime like-dislike start
+ 
             console.log(user.id);
             $(".fa-thumbs-up").addClass("disabled");
             $(".fa-thumbs-down").addClass("disabled");

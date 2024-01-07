@@ -13,6 +13,8 @@ router.get('/dashboards', ensureAuthenticated,(req, res,next)=>{
 
 router.get('/profile',(req,res)=>res.render('profile',{user:req.user}));
 
+router.get('/about',(req,res)=>res.render('about',{user:req.user}));
+
 router.get('/post',ensureAuthenticated,(req,res,next)=>{
 
   res.render('post',{user:req.user});
