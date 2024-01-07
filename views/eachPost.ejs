@@ -2,6 +2,18 @@
 <!-- Page content-->
 <div class="container mt-5">
   <div class="row">
+    <div id="container">
+      <button id="blueButton">Summarize the blog</button>
+      <script>
+        document
+          .getElementById("blueButton")
+          .addEventListener("click", function () {
+            // Add your axios function call here
+            alert("Button Clicked!");
+            console.log("After alert");
+          });
+      </script>
+    </div>
     <div class="col-lg-8">
       <!-- Post content-->
       <article>
