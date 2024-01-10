@@ -3,9 +3,9 @@
 <div class="container mt-5">
   <div class="row">
     <div id="container">
-      <button id="blueButton">Summarize the blog</button>
+      <button id="blueButton" class="button rounded-pill">Summarize the blog</button>
       <div class="dlt"> 
-         <button id="dltButton">Delete the blog</button>
+         <button id="dltButton" class="button rounded-pill">Delete the blog</button>
       </div>
     
       <!-- Include api.js directly -->
@@ -39,7 +39,7 @@
         </header>
         <!-- Post content-->
         <section class="mb-5">
-          <p class="fs-5 mb-4"><%- post.desc %></p>
+          <p class="fs-5 mb-4 border border-secondary-subtle post_desc"><%- post.desc %></p>
         </section>
       </article>
     </div>
@@ -108,7 +108,7 @@
                 post.comments = post.comments.reverse();
                 post.comments.forEach(function(comment){
                     %>
-                    <div class="d-flex mt-3">
+                    <div class="d-flex mt-3 list-group-item list-group-item-action">
                         <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
                         <div class="ms-3">
                             <div class="fw-bold"><%= comment.username %></div>

@@ -63,6 +63,24 @@ footer{
     position: relative;
   }
 
+  .login_page{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh; 
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    
+      
+}
+
+.post_desc{
+    padding: 20px;
+}
+
+
 .background-radial-gradient {
     background-color: hsl(218, 41%, 15%);
     background-image: radial-gradient(650px circle at 0% 0%,
