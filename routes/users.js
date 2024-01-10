@@ -141,7 +141,7 @@ router.post("/do-reply", async (req, res) => {
   }
 });
 
-// Add this route in user.js
+// Add this route in user.js ,,,deleting a single post of own
 router.post("/delete-post/:id", checkauthenticated, async (req, res) => {
   try {
     const postId = req.params.id;
