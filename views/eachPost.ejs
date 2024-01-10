@@ -32,14 +32,27 @@
           }
         });
       </script>
-      <script>
-        const dltButton = document.getElementById("dltButton");
+     <!-- Update the delete button script in eachpost.ejs -->
+<script>
+  const dltButton = document.getElementById("dltButton");
+  dltButton.addEventListener("click", async function () {
+    const confirmDelete = confirm("Are you sure you want to delete this post?");
+    if (confirmDelete) {
+      try {
+        // Make an AJAX request to delete the post
+        const response = await axios.post(`/users/delete-post/<%= post._id %>`);
 
-        dltButton.addEventListener("click", async function () {
-          alert("Delete button is clicked")
+        // Redirect to the home page or perform any other actions after successful deletion
+        window.location.href = '/welcome';
+        alert("Delete Successful.")
+      } catch (error) {
+        console.error("Error deleting post:", error.message);
+        alert("Error deleting post. You are not the owner of this blog."); // Display an error message (optional)
+      }
+    }
+  });
+</script>
 
-        });
-      </script>
     </div>
     <div class="col-lg-8">
       <!-- Post content-->
