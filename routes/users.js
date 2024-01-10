@@ -24,10 +24,12 @@ router.get('/welcome',checkauthenticated,async(req,res)=>{
     for (const post of posts) {
         const likeCount = await Like.count({ post_id: post._id, type: 1 });
         const dislikeCount = await Like.count({ post_id: post._id, type: 0 });
+        const user = await User.findById(post.user);  // Fetch user information by user ID
   
         // Push post data with counts to the array
         postData.push({
           post: post,
+          user: user,  // Include user information in postData
           likeCount: likeCount,
           dislikeCount: dislikeCount,
         });

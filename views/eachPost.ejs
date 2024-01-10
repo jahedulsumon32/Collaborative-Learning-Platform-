@@ -20,12 +20,24 @@
         blueButton.addEventListener("click", async function () {
           try {
             console.log("Calling fetchData with postDesc:", postDesc);
+            if (postDesc.length > 500) {
             const st = await fetchData(postDesc);
             console.log("FetchData response:", st);
-            alert(st);
+            alert(st);}
+            else{
+              alert("Please read the whole blog. It is already a short blog.");
+            }
           } catch (err) {
             console.error("Error in fetchData:", err);
           }
+        });
+      </script>
+      <script>
+        const dltButton = document.getElementById("dltButton");
+
+        dltButton.addEventListener("click", async function () {
+          alert("Delete button is clicked")
+
         });
       </script>
     </div>
