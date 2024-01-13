@@ -80,10 +80,11 @@ router.get("/eachPost/:id", checkauthenticated, async (req, res, next) => {
 });
 router.post("/add-comment", async (req, res) => {
   try {
+    console.log(req.user)
     // console.log(req.body)
     var post_id = req.body.post_id;
-    var username = req.body.username;
-    var email = req.body.email;
+    var username = req.user.name;
+    var email = req.user.email;
     var comment = req.body.comment;
     if (!post_id) {
       return res.status(400).send({ success: false, msg: "Invalid post_id" });

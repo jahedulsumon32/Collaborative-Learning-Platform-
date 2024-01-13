@@ -97,20 +97,6 @@
         <button id="show-comment-form" class="btn btn-primary mt-3">Add a Comment</button>
         <form class="mb-4" id="comment-form" style="display:none;">
           <input type="hidden" name="post_id" value="<%= post._id %>" />
-          <input
-            type="text"
-            name="username"
-            placeholder="Enter your name"
-            required
-            class="form-control mb-3"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your mail"
-            required
-            class="form-control mb-3"
-          />
 
           <textarea
             class="form-control"
@@ -156,17 +142,15 @@
                           }
                       %>
                       </div>
-                      <button id="show-reply-form" class="btn btn-info  btn-sm mt-3">reply</button>
+                      <button id="show-reply-form-<%= comment._id %>" class="btn btn-info  btn-sm mt-3">reply</button>
                       <div class="col-md-12">
                         <!-- Show/Hide reply Form button -->
                        
-                          <form class="do-reply" id="reply-form" style="display:none;">
+                          <form class="do-reply" id="reply-form-<%= comment._id %>" style="display:none;">
                               <input type="hidden" name="post_id" value="<%= post._id %>">
                               <input type="hidden" name="comment_id" value="<%= comment._id %>">
                               <input type="hidden" name="comment_email" value="<%= comment.email %>">
-                              <div class="form-group">
-                                  <input type="text" class="form-control" name="name" placeholder="Enter Name" required>
-                              </div>
+    
                               <div class="form-group">
                                   <textarea class="form-control" name="reply" placeholder="Enter Reply" required></textarea>
                               </div>
@@ -194,12 +178,13 @@
 
 
       <!-- like dislike icons end -->
-      <!-- <%- include('./partials/footer.ejs')%> -->
+     
       <script>
         //import socket for real time update data
         let socket = io();
         let post_id = "<%=post._id%>";
         let post_user_id = "<%=user.id%>";
+        let session_user_name="<%= user.name %>";
         $(document).ready(function () {
              // Show/Hide Comment Form button click event
                 $("#show-comment-form").click(function () {
@@ -224,6 +209,7 @@
                 $(".com-status").text(data.msg);
                 setTimeout(function () {
                   $(".com-status").text("");
+                  $("#comment-form").toggle();
                 }, 1000);
               },
             });
@@ -240,7 +226,7 @@
           <div class="d-flex mt-3">
               <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
               <div class="ms-3">
-                  <div class="fw-bold">`+comment.username+`</div>
+                  <div class="fw-bold">`+session_user_name+`</div>
                   `+comment.comment+`
               </div>
           </div>
@@ -248,12 +234,13 @@
           $('#comment-section').prepend(html);
           });
 
-          // Show/Hide Comment Form button click event
-          $("#show-reply-form").click(function () {
-                $("#reply-form").toggle();
-                });
+          // Show/Hide reply Form button click event
+          $(document).on("click", "[id^=show-reply-form-]", function () {
+      const commentId = this.id.split("-")[3];
+      $(`#reply-form-${commentId}`).toggle();
+    });
 
-        $('.do-reply').submit(function(event){
+    $(document).on("submit", "[class^=do-reply]", function (event){
           
         event.preventDefault();
 
@@ -277,6 +264,7 @@
                 $(".reply-status").text(data.msg);
                         setTimeout(function () {
                           $(".reply-status").text("");
+                          $("#reply-form").toggle();
                         }, 1000);
                 
             }
@@ -285,13 +273,13 @@
 
 
         socket.on("new_reply",function(reply){
-        console.log(reply)
+        // console.log(reply)
         var html = "";
         html +=`
         <div class="container d-flex mt-3 mb-3">
             <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
             <div class="ms-3">
-                <div class="fw-bold">`+reply.name+`</div>
+                <div class="fw-bold">`+session_user_name+`</div>
                 `+reply.reply+`
             </div>
         </div>
@@ -325,6 +313,4 @@
           //realtime like-dislike end
         });
       </script>
-    </div>
-  </section>
-</div>
+ <%- include('./partials/footer.ejs')%>
