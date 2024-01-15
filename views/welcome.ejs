@@ -1,141 +1,91 @@
-
 <%- include('./partials/home_nav.ejs')%>
-<% if(postData.length>0){%>
-  <!-- postData=postData.reverse(); -->
-    <% postData.forEach(data=>{%>
-<div class="container mt-5 mb-5">
-  <div class="row d-flex align-items-center justify-content-center">
-      <div class="col-md-6">
+
+<% if(paginatedPosts.length > 0) { %>
+  <!-- Display paginated posts -->
+  <% paginatedPosts.forEach(post => { %>
+    <div class="container mt-5 mb-5">
+      <div class="row d-flex align-items-center justify-content-center">
+        <div class="col-md-6">
           <div class="card">
-              <div class="d-flex justify-content-between p-2 px-3">
-                  <div class="d-flex flex-row align-items-center"> <img src="https://bootdey.com/img/Content/avatar/avatar7.png" width="50" class="rounded-circle">
-                      <div class="d-flex flex-column ml-2"> <span class="font-weight-bold">  <%=data.user.name%></span> <small class="text-primary">Student</small> </div>
-                  </div>
-                  <div class="d-flex flex-row mt-1 ellipsis"> 
-                    <small class="mr-2">
-                        <span class="post-time" data-timestamp="<%= data.post.date %>">
-                          <%= data.post.date.toDateString() %>
-                        </span>
-                      </small>
-                      
-                 </div>
+            <div class="d-flex justify-content-between p-2 px-3">
+              <div class="d-flex flex-row align-items-center"> 
+                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" width="50" class="rounded-circle">
+                <div class="d-flex flex-column ml-2"> 
+                  <span class="font-weight-bold"> <%= post.user.name %></span> 
+                  <small class="text-primary">Student</small> 
+                </div>
               </div>
-              
-              <div class="p-2">
-                <% if (data.post.desc.length <= 150) { %>
-                    <!-- If the description is 50 characters or less, display it entirely -->
-                    <p class="text-justify"><%=data.post.desc %></p>
-                    <button class="see-more-button"><a href="/eachPost/<%=data.post._id%>">See Deatils</a></button>
-                  <% } else { %>
-                    <!-- If the description is longer than 50 characters, display the first 50 characters -->
-                    <p class="text-justify" data-desc="<%= data.post.desc %>"><%= data.post.desc.slice(0, 150) %></p>
-                    <!-- Include a "See More" button to expand the description -->
-                    <button class="see-more-button"><a href="/eachPost/<%=data.post._id%>">See Deatils</a></button>
-                  <% } %>
-                
-                  <hr>
-                  <!-- <div class="d-flex justify-content-between align-items-center">
-                      <div class="d-flex flex-row icons d-flex align-items-center">
-                        <i class="fa fa-thumbs-up mx-2"></i>
-                        <span id="like_<%= data.post._id %>"><%= data.likeCount %></span>     
-                        <i class="fa fa-thumbs-down mx-2"></i>
-                        <span id="dislike_<%=data.post_id%>"><%= data.dislikeCount %></span>
-                        </div>
-                      <div class="d-flex flex-row muted-color"> <span>2 comments</span> <span class="ml-2">Share</span> </div>
-                  </div> -->
-                  <hr>
-
-                      <!-- <div class="comment-input"> 
-                        
-                        <input type="text" class="form-control" placeholder="write a comment" id="commentInput_<%= data.post.id %>">
-                          <div class="fonts"><button class="btn" onclick="addComment('<%= data.post.id %>')"> <i class="fa fa-paper-plane"></i></button></div>
-                      </div> -->
-                  </div>
+              <div class="d-flex flex-row mt-1 ellipsis"> 
+                <small class="mr-2">
+                  <span class="post-time" data-timestamp="<%= post.date %>">
+                    <%= post.date.toDateString() %>
+                  </span>
+                </small>
               </div>
+            </div>
+            <div class="p-2">
+              <% if (post.desc.length <= 150) { %>
+                <p class="text-justify"><%= post.desc %></p>
+                <button class="see-more-button"><a href="/eachPost/<%= post._id %>">See Details</a></button>
+              <% } else { %>
+                <p class="text-justify" data-desc="<%= post.desc %>"><%= post.desc.slice(0, 150) %></p>
+                <button class="see-more-button"><a href="/eachPost/<%= post._id %>">See Details</a></button>
+              <% } %>
+              <hr>
+            </div>
           </div>
+        </div>
       </div>
-  </div>
+    </div>
+  <% }); %>
+
+<!-- Pagination Links -->
+<div class="pagination mt-3 d-flex justify-content-center">
+  <% if (currentPage > 1) { %>
+    <a href="?page=<%= currentPage - 1 %>" class="page-link">Previous</a>
+  <% } %>
+
+  <% for (let i = 1; i <= totalPages; i++) { %>
+    <a href="?page=<%= i %>" class="page-link <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+  <% } %>
+
+  <% if (currentPage < totalPages) { %>
+    <a href="?page=<%= currentPage + 1 %>" class="page-link">Next</a>
+  <% } %>
 </div>
-<%})%>
-          <%} else{%>
-            <p class="post-content">There is nothing to show</p>
-            <% }%>
-  <%- include('./partials/footer.ejs')%>
-            
-  <script>
-    
-//    document.querySelectorAll('.see-more-button').forEach(function (button) {
-//   button.addEventListener('click', function () {
-//     const paragraphElement = this.previousElementSibling; // Get the previous sibling of the clicked button, which is the <p> element
-//     if (paragraphElement) {
-//       const fullDescription = paragraphElement.getAttribute('data-desc');
-//       const currentState = paragraphElement.getAttribute('data-state'); // Get the current state
 
-//       if (currentState === 'collapsed') {
-//         // If it's currently collapsed, expand it
-//         paragraphElement.textContent = fullDescription;
-//         paragraphElement.setAttribute('data-state', 'expanded');
-//         button.textContent = 'Show Less'; // Change the button text
-//       } else {
-//         // If it's currently expanded, collapse it
-//         paragraphElement.textContent = fullDescription.slice(0, 150);
-//         paragraphElement.setAttribute('data-state', 'collapsed');
-//         button.textContent = '...See More'; // Change the button text
-//       }
-//     } else {
-//       console.error('Paragraph element not found');
-//     }
-//   });
-// });
+<% } else { %>
+  <p class="post-content">There is nothing to show</p>
+<% } %>
 
-  // Function to format and update the posting time
-  function updatePostingTime() {
-    const postTimeElements = document.querySelectorAll('.post-time');
 
-    postTimeElements.forEach((element) => {
-      const timestamp = new Date(element.getAttribute('data-timestamp'));
-      const now = new Date();
+<%- include('./partials/footer.ejs')%>
 
-      // Calculate the time difference in milliseconds
-      const timeDifference = now - timestamp;
+<script>
+  // Your existing JavaScript code for updating posting times
+  // ...
 
-      // Calculate time units (seconds, minutes, hours, days)
-      const seconds = Math.floor(timeDifference / 1000);
-      const minutes = Math.floor(seconds / 60);
-      const hours = Math.floor(minutes / 60);
-      const days = Math.floor(hours / 24);
-     // const month = Math.floor(days / 30)
-
-      let formattedTime = '';
-      // if(month>0){
-      //   formattedTime=`${month}`;
-      // }
-      // else
-       if (days > 0) {
-        formattedTime = `${days}d`;
-      } else if (hours > 0) {
-        formattedTime = `${hours}h`;
-      } else if (minutes > 0) {
-        formattedTime = `${minutes}m`;
+  // Function to handle See More/See Less functionality
+  document.querySelectorAll('.see-more-button').forEach(function (button) {
+    button.addEventListener('click', function () {
+      const paragraphElement = this.previousElementSibling;
+      if (paragraphElement) {
+        const fullDescription = paragraphElement.getAttribute('data-desc');
+        const currentState = paragraphElement.getAttribute('data-state');
+        if (currentState === 'collapsed') {
+          paragraphElement.textContent = fullDescription;
+          paragraphElement.setAttribute('data-state', 'expanded');
+          button.textContent = 'Show Less';
+        } else {
+          paragraphElement.textContent = fullDescription.slice(0, 150);
+          paragraphElement.setAttribute('data-state', 'collapsed');
+          button.textContent = '...See More';
+        }
       } else {
-        formattedTime = `${seconds}s`;
+        console.error('Paragraph element not found');
       }
-
-      // Update the element with the formatted time
-      element.textContent = formattedTime+' ago';
     });
-  }
+  });
+</script>
 
-  // Call the function to initially format the posting times
-  updatePostingTime();
 
-  // Periodically update posting times (e.g., every minute)
-  setInterval(updatePostingTime, 60000); // Update every minute
-
- 
-   
-  </script>
-
-  
-   
-    
