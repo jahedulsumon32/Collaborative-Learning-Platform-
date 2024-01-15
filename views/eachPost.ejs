@@ -235,6 +235,8 @@
           });
 
           // Show/Hide reply Form button click event
+
+          // a click event listener to the entire document [id^=show-reply-form-] is a jQuery attribute starts with selector.
           $(document).on("click", "[id^=show-reply-form-]", function () {
       const commentId = this.id.split("-")[3];
       $(`#reply-form-${commentId}`).toggle();

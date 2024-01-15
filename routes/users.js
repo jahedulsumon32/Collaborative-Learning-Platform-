@@ -127,7 +127,7 @@ router.post("/do-reply", async (req, res) => {
         $push: {
           "comments.$.replies": {
             _id: reply_id,
-            name: req.body.name,
+            name: req.user.name,
             reply: req.body.reply,
           },
         },
