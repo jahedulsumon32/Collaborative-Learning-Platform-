@@ -86,4 +86,6 @@ router.get("/chat", ensureAuthenticated, (req, res) => {
   res.render("chat", { user: req.user });
 });
 
+router.get('/editProfile',(req,res)=>res.render('editProfile',{user:req.user}));
+
 module.exports = router;
