@@ -42,7 +42,7 @@ router.get("/login", (req, res) => {
 
 router.get("/welcome", ensureAuthenticated, async (req, res) => {
   const currentPage = req.query.page || 1;
-  const postsPerPage = 2; // Adjust as needed
+  const postsPerPage = 3; // Adjust as needed
 
   try {
     const paginatedPosts = await Post.paginatePosts(currentPage, postsPerPage);
