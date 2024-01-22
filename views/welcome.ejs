@@ -16,7 +16,13 @@
                   <img src='https://bootdey.com/img/Content/avatar/avatar7.png' width="50" class="rounded-circle" alt="">
                 <% } %>
                 <div class="d-flex flex-column ml-2"> 
-                  <span class="font-weight-bold"> <%= post.user.name %></span> 
+                  <span class="font-weight-bold">
+                    <% if (post.user && post.user.name) { %>
+                      <%= post.user.name %>
+                    <% } else { %>
+                      Unknown User
+                    <% } %>
+                  </span> 
                   <small class="text-primary">Student</small> 
                 </div>
               </div>
@@ -44,25 +50,24 @@
     </div>
   <% }); %>
 
-<!-- Pagination Links -->
-<div class="pagination mt-3 d-flex justify-content-center">
-  <% if (currentPage > 1) { %>
-    <a href="?page=<%= currentPage - 1 %>" class="page-link">Previous</a>
-  <% } %>
+  <!-- Pagination Links -->
+  <div class="pagination mt-3 d-flex justify-content-center">
+    <% if (currentPage > 1) { %>
+      <a href="?page=<%= currentPage - 1 %>" class="page-link">Previous</a>
+    <% } %>
 
-  <% for (let i = 1; i <= totalPages; i++) { %>
-    <a href="?page=<%= i %>" class="page-link <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
-  <% } %>
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <a href="?page=<%= i %>" class="page-link <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+    <% } %>
 
-  <% if (currentPage < totalPages) { %>
-    <a href="?page=<%= currentPage + 1 %>" class="page-link">Next</a>
-  <% } %>
-</div>
+    <% if (currentPage < totalPages) { %>
+      <a href="?page=<%= currentPage + 1 %>" class="page-link">Next</a>
+    <% } %>
+  </div>
 
 <% } else { %>
   <p class="post-content">There is nothing to show</p>
 <% } %>
-
 
 <%- include('./partials/footer.ejs')%>
 
