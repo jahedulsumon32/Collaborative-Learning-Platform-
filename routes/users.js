@@ -93,8 +93,7 @@ router.get("/eachPost/:id", checkauthenticated, async (req, res, next) => {
 });
 router.post("/add-comment", async (req, res) => {
   try {
-    console.log(req.user)
-    // console.log(req.body)
+    
     var post_id = req.body.post_id;
     var username = req.user.name;
     var email = req.user.email;

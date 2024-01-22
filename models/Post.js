@@ -33,7 +33,7 @@ postSchema.statics.paginatePosts = async function (page = 1, limit = 3) {
     .sort({ date: -1 }) // Sorting by date in descending order (most recent first)
     .skip(skip)
     .limit(limit)
-    .populate("user", "name email"); // Populate the 'user' field with 'name' and 'email'
+    .populate("user", "name email image"); // Populate the 'user' field with 'name' and 'email and image'
 
   return posts;
 };

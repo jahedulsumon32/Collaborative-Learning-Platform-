@@ -14,7 +14,6 @@ router.get("/welcome", ensureAuthenticated, async (req, res) => {
 
   try {
     const paginatedPosts = await Post.paginatePosts(currentPage, postsPerPage);
-
     // Calculate total pages dynamically based on the total number of posts and posts per page
     const totalPosts = await Post.countDocuments({});
     const totalPages = Math.ceil(totalPosts / postsPerPage);
