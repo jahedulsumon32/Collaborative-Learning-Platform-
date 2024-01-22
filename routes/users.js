@@ -4,12 +4,25 @@ const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 const emailValidator = require("deep-email-validator");
-
+const path=require('path');
+const multer=require('multer');
 // load user model
 const User = require("../models/User");
 const Post = require("../models/Post");
 const Like = require("../models/Like");
 
+
+// Setting Up multer to upload image or file 
+const storage=multer.diskStorage({
+  destination:function(req,file,cb){
+      cb(null,path.join(__dirname,'../public/images'));
+  },
+  filename:function(req,file,cb){
+      const name=Date.now()+'_'+file.originalname;
+      cb(null,name);
+  }
+})
+const upload=multer({storage:storage});
 // Login page
 router.get("/login", checkNotauthenticated, (req, res) => res.render("login"));
 // register page
@@ -177,17 +190,20 @@ router.post("/delete-post/:id", checkauthenticated, async (req, res) => {
 // register handle
 router.post("/register", checkNotauthenticated, async (req, res) => {
   const { name, email, password, password2 } = req.body;
-  async function isEmailValid(email) {
-    return emailValidator.validate(email);
-  }
   let errors = [];
-  // check required fields
-  const { valid, reason, validators } = await isEmailValid(email);
-  if (!valid) {
-    errors.push({
-      msg: "please provide a correct email.Provided email mailbox is not found",
-    });
-  }
+
+  //checking function if mailbox is exists or not
+  // async function isEmailValid(email) {
+  //   return emailValidator.validate(email);
+  // }
+  
+  // // check required fields
+  // const { valid, reason, validators } = await isEmailValid(email);
+  // if (!valid) {
+  //   errors.push({
+  //     msg: "please provide a correct email.Provided email mailbox is not found",
+  //   });
+  // }
   if (!name || !email || !password || !password2) {
     errors.push({ msg: "Please filled required field" });
   }
@@ -230,10 +246,10 @@ router.post("/register", checkNotauthenticated, async (req, res) => {
             if (err) throw err;
             // Set password to hash
             newUser.password = hash;
-
+           
             newUser
               .save()
-              .then((user) => {
+              .then(async (user) => {
                 req.flash(
                   "success_msg",
                   "You are now a registed So you can log in"
@@ -247,6 +263,38 @@ router.post("/register", checkNotauthenticated, async (req, res) => {
     });
   }
 });
+
+// controller for updating UserDetails Info
+router.post("/editProfile",checkauthenticated,upload.single('image'),async(req,res)=>{
+  try {
+    // const { name, email, mobile, language, region, DOB } = req.body;
+    
+    // console.log({name, email, mobile, language, region, DOB});
+    // Find the user details document for the given userId
+   
+    
+    await User.findByIdAndUpdate(
+      {_id:req.body.user_id},
+      {
+      name: req.body.name,
+      email: req.body.email,
+      mobile: req.body.mobile,
+      language: req.body.language,
+      country: req.body.region,
+      DOB: req.body.DOB,
+      image:'images/'+req.file.filename,
+      },
+      {new:true}
+    )
+    res.redirect("/profile")
+   
+    }
+   catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+;
+})
 router.post("/post", checkauthenticated, async (req, res, next) => {
   try {
     const { title, desc } = req.body;

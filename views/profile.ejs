@@ -95,14 +95,14 @@ body {
                 <div class="account-settings">
                     <div class="user-profile">
                         <div class="user-avatar">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Maxwell Admin">
+                            <img src="<%=user.image%>" alt="Maxwell Admin">
                         </div>
                         <h5 class="user-name"><%=user.name%></h5>
                         <h6 class="user-email"><%=user.email%></h6>
                     </div>
                     <div class="about">
                         <h5>About</h5>
-                        <p>I'm Yuki. Full Stack Designer I enjoy creating user-centric, delightful and human experiences.</p>
+                        <p>I'm <%=user.name%>. Full Stack Designer I enjoy creating user-centric, delightful and human experiences.</p>
                     </div>
                 </div>
             </div>
@@ -115,14 +115,6 @@ body {
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <h4 class="mb-2 text-primary text-center">Personal Details</h4>
                     </div>
-                    <!-- <div class="col-xl-6 col-lg-6 col-md-auto col-sm-auto col-12">
-                        <div class="form-group">
-                            <label for="fullName">Full Name :</label>
-                            <label for="fullName">MD. Yeasin Arafat</label>
-
-                            <input type="text" class="form-control" id="fullName" placeholder="Enter full name">
-                        </div>
-                    </div> -->
                     <div class="row mt-4 ">
                         <div class="col-md-2 ml-3">
                             <label for="inputName" class="col-form-label"><b>Full Name :</b></label>
@@ -146,7 +138,7 @@ body {
                             <label for="inputMobile" class="col-form-label"><b>Mobile No :</b></label>
                           </div>
                           <div class="col-md-3">
-                            <label for="inputMobile" class="col-form-label">01575516910</label>
+                            <label for="inputMobile" class="col-form-label"><%= user.mobile%></label>
                           </div>
                     </div><hr class="my-2 hrWidth">
                     
@@ -155,7 +147,7 @@ body {
                             <label for="inputLanguage" class="col-form-label"><b>Language :</b></label>
                           </div>
                           <div class="col-md-3">
-                            <label for="inputLanguage" class="col-form-label">Bangla</label>
+                            <label for="inputLanguage" class="col-form-label"><%= user.language%></label>
                           </div>
                     </div><hr class="my-2 hrWidth">
 
@@ -165,7 +157,7 @@ body {
                             <label for="inputCountry" class="col-form-label"><b>Country :</b></label>
                           </div>
                           <div class="col-md-3">
-                            <label for="inputCountry" class="col-form-label">Bangladesh</label>
+                            <label for="inputCountry" class="col-form-label"><%= user.country%></label>
                           </div>
                     </div><hr class="my-2 hrWidth">
 
@@ -175,61 +167,9 @@ body {
                             <label for="inputDOB" class="col-form-label"><b>Date Of Birth:</b></label>
                           </div>
                           <div class="col-md-3">
-                            <label for="inputDOB" class="col-form-label">25/11/1999</label>
+                            <label for="inputDOB" class="col-form-label"><%= user.DOB%></label>
                           </div>
                     </div><hr class="my-2 hrWidth">
-                    
-
-
-
-                    <!-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label for="eMail">Email</label>
-                            <input type="email" class="form-control" id="eMail" placeholder="Enter email ID">
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label for="phone">Phone</label>
-                            <input type="text" class="form-control" id="phone" placeholder="Enter phone number">
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label for="website">Website URL</label>
-                            <input type="url" class="form-control" id="website" placeholder="Website url">
-                        </div>
-                    </div> -->
-                </div>
-                <!-- <div class="row gutters">
-                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                        <h6 class="mt-3 mb-2 text-primary">Address</h6>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label for="Street">Street</label>
-                            <input type="name" class="form-control" id="Street" placeholder="Enter Street">
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label for="ciTy">City</label>
-                            <input type="name" class="form-control" id="ciTy" placeholder="Enter City">
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label for="sTate">State</label>
-                            <input type="text" class="form-control" id="sTate" placeholder="Enter State">
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label for="zIp">Zip Code</label>
-                            <input type="text" class="form-control" id="zIp" placeholder="Zip Code">
-                        </div>
-                    </div>
-                </div> -->
                 <div class="row gutters">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="text-center mt-2">

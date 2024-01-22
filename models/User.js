@@ -9,6 +9,23 @@ email:{
 password:{
     type:String,required:true
 },
+image:{
+    type:String,
+},
+mobile:{
+    type:String,
+   
+},
+DOB:{
+    type:String,
+   
+},
+language:{
+    type:String,
+},
+country:{
+    type:String
+},
 date:{
     type:Date,
     default:Date.now

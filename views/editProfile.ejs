@@ -157,13 +157,13 @@ body {
     </style>
 </head>
 <body>
-
+  <form action="/users/editProfile" method="POST" enctype="multipart/form-data">
     <div class="container rounded bg-white mt-5 mb-5">
         <div class="container row">
             <div class="col-md-3 border-right">
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                     <div class="profile-image-container" onclick="triggerFileInput()">
-                        <img class="profile-image" src="your_current_image.jpg" alt="Profile Image">
+                        <img class="profile-image" src="<%=user.image%>" alt="Profile Image">
                         <div class="overlay">
                           <label class="hover-text" for="file-input">
                             <span class="hover-icon">&#128247;</span> Change Image
@@ -172,7 +172,7 @@ body {
                       </div>
                     
                       <!-- Input for choosing a file -->
-                      <input type="file" id="file-input" class="file-input" accept="image/*" onchange="previewImage(event)" />
+                      <input type="file" name="image" id="file-input" class="file-input"  onchange="previewImage(event)" />
                     
                 
                 <span class="font-weight-bold mt-3"><%=user.name%></span><span class="text-black-50"><%=user.email%></span><span> </span></div>
@@ -183,21 +183,22 @@ body {
                         <h4 class="mb-4 text-primary text-center">Profile Settings</h4>
                     </div>
                     
-                <form action="" method="POST">
+              
                       <div class="form-group input-container">
+                        <input type="hidden" name="user_id" value="<%=user._id%>">
                         <label for="name">Full Name :</label>
-                        <input type="text" id="name" class="form-control" placeholder="enter full name"  aria-describedby="passwordHelpInline">
+                        <input type="text" id="name" class="form-control" placeholder="enter full name" name="name" aria-describedby="passwordHelpInline" value="<%=user.name%>">
                       </div>
 
                     <div class="form-group input-container">
                         <label for="email">Email :</label>
-                        <input type="text" id="email" class="form-control" placeholder="enter email address"  aria-describedby="passwordHelpInline">
+                        <input type="text" id="email" class="form-control" placeholder="enter email address" name="email" aria-describedby="passwordHelpInline" value="<%=user.email%>">
                     </div>
 
 
                     <div class="form-group input-container">
                         <label for="mobile">Mobile:</label>
-                        <input type="text" id="mobile" class="form-control" placeholder="enter mobile number"  aria-describedby="passwordHelpInline">
+                        <input type="text" id="mobile" class="form-control" value="<%= user.mobile%>" placeholder="enter mobile number"  name="mobile" aria-describedby="passwordHelpInline">
                     </div>
 
                     <div class="form-group input-container">
@@ -469,7 +470,7 @@ body {
                     
                     <div class="form-group input-container">
                         <label for="birth">Date of Birth :</label>
-                        <input type="date" id="birth" class="form-control" aria-describedby="passwordHelpInline">
+                        <input type="date" id="birth"  value="<%= user.DOB%>" class="form-control" name="DOB"aria-describedby="passwordHelpInline">
 
                     </div>
                     
