@@ -10,10 +10,10 @@
             <div class="d-flex justify-content-between p-2 px-3">
               <div class="d-flex flex-row align-items-center"> 
                 <% if (post.user && post.user.image) { %>
-                  <img src='<%= post.user.image %>' width="50" class="rounded-circle" alt="">
+                  <img src='<%= post.user.image %>' width="50"  height="50" class="rounded-circle" alt="">
                 <% } else { %>
                   <!-- Provide a default image or handle the case where image is not available -->
-                  <img src='https://bootdey.com/img/Content/avatar/avatar7.png' width="50" class="rounded-circle" alt="">
+                  <img src='https://bootdey.com/img/Content/avatar/avatar7.png'  width="50"  height="50"  class="rounded-circle" alt="">
                 <% } %>
                 <div class="d-flex flex-column ml-2"> 
                   <span class="font-weight-bold">
