@@ -271,22 +271,40 @@ router.post("/editProfile",checkauthenticated,upload.single('image'),async(req,r
     // console.log({name, email, mobile, language, region, DOB});
     // Find the user details document for the given userId
    
+    if(req.file){
+      await User.findByIdAndUpdate(
+        {_id:req.body.user_id},
+        {
+        name: req.body.name,
+        email: req.body.email,
+        mobile: req.body.mobile,
+        language: req.body.language,
+        country: req.body.region,
+        DOB: req.body.DOB,
+        image:'images/'+req.file.filename,
+        },
+        {new:true}
+      )
+      res.redirect("/profile")
+     
+    }
+    else{
+      await User.findByIdAndUpdate(
+        {_id:req.body.user_id},
+        {
+        name: req.body.name,
+        email: req.body.email,
+        mobile: req.body.mobile,
+        language: req.body.language,
+        country: req.body.region,
+        DOB: req.body.DOB,
+        },
+        {new:true}
+      )
+      res.redirect("/profile")
+     
+    }
     
-    await User.findByIdAndUpdate(
-      {_id:req.body.user_id},
-      {
-      name: req.body.name,
-      email: req.body.email,
-      mobile: req.body.mobile,
-      language: req.body.language,
-      country: req.body.region,
-      DOB: req.body.DOB,
-      image:'images/'+req.file.filename,
-      },
-      {new:true}
-    )
-    res.redirect("/profile")
-   
     }
    catch (error) {
     console.error(error);
