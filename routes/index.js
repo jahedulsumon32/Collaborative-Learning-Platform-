@@ -7,7 +7,9 @@ const Post = require("../models/Post");
 router.get("/login", (req, res) => {
   res.render("login", { user: req.user });
 });
-
+router.get("/register", (req, res) => {
+  res.render("register");
+});
 router.get("/welcome", ensureAuthenticated, async (req, res) => {
   const currentPage = req.query.page || 1;
   const postsPerPage = 6; // Adjust as needed
@@ -50,7 +52,7 @@ router.get("/eachPost/:id", ensureAuthenticated, (req, res, next) => {
 });
 
 router.get("/chat", ensureAuthenticated, (req, res) => {
-  res.render("chat", { user: req.user });
+  res.redirect("/users/chat");
 });
 
 router.get('/editProfile',(req,res)=>res.render('editProfile',{user:req.user}));

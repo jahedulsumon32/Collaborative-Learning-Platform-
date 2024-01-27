@@ -6,74 +6,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App</title>
+    <title>Chat-Room</title>
     <link href="style.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"
         integrity="sha512-Xm9qbB6Pu06k3PUwPj785dyTl6oHxgsv9nHp7ej7nCpAqGZT3OZpsELuCYX05DdonFpTlBpXMOxjavIAIUwr0w=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
+        <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+
     <style>
-     * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-size: 1rem;
-    font-family: Arial, Helvetica, sans-serif;
-}
+  
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+        }
 
-body {
-    background-color: #bfbdbd;
-    color: #030303;
-}
+        .row {
+            margin: 0;
+        }
 
-main {
-    height: 100vh;
-    padding: 1rem;
-    display: flex;
-    flex-flow: column;
-}
+        .left-sidebar {
+            padding: 15px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-form {
-    width: 100%;
-    margin: auto;
-    max-width: 600px;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    gap: .25rem;
-}
+        .chat-sidebar {
+            margin-bottom: 15px;
+        }
 
-input {
-    flex-grow: 1;
-    max-width: calc(80% - .25rem);
-}
+        .form-join {
+            display: flex;
+            flex-direction: column; 
+            gap: 10px;
+        }
 
-button {
-    width: 20%;
-}
+        #join {
+            margin-top: 10px;
+        }
 
-input,
-button {
-    border-radius: 10px;
-    padding: .5rem;
-}
+        .room-list, .active-users-room {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
 
-.chat-display {
-    background-color: #333;
-    list-style-type: none;
-    width: 100%;
-    max-width: 600px;
-    border-radius: 10px;
-    margin: 1rem auto;
-    padding: 0;
-    display: flex;
-    flex-flow: column;
-    justify-content: left;
-    overflow: auto;
-    flex-grow: 1;
-}
+        .room-list ul, .user-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+        }
+        .user-list li{
+            list-style-type: none;
+        }
+        .chat-display {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            height: 500px;
+            overflow-y: auto;
+            list-style-type: none;
+            width: 100%;
+            margin: 1rem auto;
+            display: flex;
+            flex-flow: column;
+            justify-content: left;
+            flex-grow: 1;
+        }
 
-.post {
+        .form-msg {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        #message {
+            flex-grow: 1;
+        }
+
+        button.btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        button.btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .activity {
+            margin-top: 10px;
+            font-style: italic;
+            color: #060606;
+        }
+        .post {
     background-color: #eee;
     border-radius: 10px;
     padding: 0 0 .25rem;
@@ -102,11 +131,11 @@ button {
 }
 
 .post__header--user {
-    background-color: blue;
+    background-color: rgb(136, 136, 223);
 }
 
 .post__header--reply {
-    background-color: purple;
+    background-color: rgb(189, 152, 189);
 }
 
 .post__header--name {
@@ -122,76 +151,92 @@ button {
     color: #333;
     padding: .25rem .5rem;
 }
-
-.user-list,
-.room-list,
-.activity {
-    width: 100%;
-    min-height: 2.65rem;
-    margin: 0 auto;
-    max-width: 800px;
-    padding: .75rem .25rem;
+.input-with-icon {
+  position: relative;
 }
 
-.activity {
-    font-style: italic;
+.user-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #ccc; 
 }
-      </style>
+
+#name {
+  padding-left: 30px; 
+  width:'100%';
+}
+    </style>
 </head>
 
 <body>
   <%- include('./partials/home_nav.ejs')%>
-    <main>
-        <form class="form-join">
-
-            <input type="text" id="name" maxlength="8" placeholder="<% user.name%>" size="5" required>
-            <input type="text" id="room" placeholder="Chat room" size="5" required>
-            <button id="join" type="submit">Join</button>
-        </form>
-
-        <ul class="chat-display"></ul>
-
-        <p class="user-list"></p>
-
-        <p class="room-list"></p>
-
-        <p class="activity"></p>
-
-        <form class="form-msg">
-            <input type="text" id="message" placeholder="Your message" required>
-            <button type="submit">Send</button>
-        </form>
-    </main>
+    
+        <div class="row">
+            <div class="col-md-4 mt-3 left-sidebar">
+                    <div class="chat-sidebar">
+                       <h5 class="mx-2"> <i class="fas fa-user mx-2"></i><%= user.name %></h5>
+                        <form class="form-join">
+                          
+                            <div class="input-with-icon">
+                               
+                                <input type="hidden" id="name" placeholder="Your name" size="5" value="<%= user.name %>">
+                              </div>
+                            <input type="text" id="room" placeholder="Chat room" size="5" required>
+                        </div>
+                            <button class='btn btn-success' id="join" type="submit" >Join</button>
+                        </form>
+                        <div class="room-list">
+                            <h4 style="color:#25ca1c;"><i class="fas fa-comments"></i> Active Room </h4>
+                            
+                            <ul class="room-list"></ul>
+                            <h4 style="color:#53a285"><i class="fas fa-comments"></i> Room</h4>
+                            <ul class="previous-room">
+                            <%if(rooms.length>0){%>
+                                <% (rooms.forEach(room=>{%>
+                                    <li><%= room.name%></li>
+                                    <% }))%>
+                                    <%  } %>
+                            </ul>
+                        </div>
+                        <div class="active-users-room">
+                            <h4 style="color:#12bd3d;"><i class="fas fa-users"></i> Active Users</h4>
+                            <ul class="user-list"></ul>
+                        </div>
+                      
+                                    
+                           
+                        
+                
+                    </div>
+                    <div class="col-md-8 mt-3 send-display">
+                       
+                        <ul class="chat-display">
+                            
+                        </ul>
+                        <p class="activity"></p>
+                        <form class="form-msg">
+                            <input type="text" id="message" placeholder="Your message" required>
+                            <button type="submit">Send</button>
+                        </form>       
+                       
+                    </div>
+        </div>
+  
     <script>
+        const socket = io('ws://localhost:8080')
+
 const msgInput = document.querySelector('#message')
 const nameInput = document.querySelector('#name')
 const chatRoom = document.querySelector('#room')
 const activity = document.querySelector('.activity')
-const usersList = document.querySelector('.user-list')
-const roomList = document.querySelector('.room-list')
+const roomList = document.querySelector('.room-list ul');
+const usersList = document.querySelector('.active-users-room ul');
+
 const chatDisplay = document.querySelector('.chat-display')
-
-function sendMessage(e) {
-    e.preventDefault()
-    if (nameInput.value && msgInput.value && chatRoom.value) {
-        socket.emit('message', {
-            name: nameInput.value,
-            text: msgInput.value
-        })
-        msgInput.value = ""
-    }
-    msgInput.focus()
-}
-
-function enterRoom(e) {
-    e.preventDefault()
-    if (nameInput.value && chatRoom.value) {
-        socket.emit('enterRoom', {
-            name: nameInput.value,
-            room: chatRoom.value
-        })
-    }
-}
+const roomListContent = document.querySelector('.room-list-content');
+const userListContent = document.querySelector('.user-list-content');
 
 document.querySelector('.form-msg')
     .addEventListener('submit', sendMessage)
@@ -232,46 +277,79 @@ let activityTimer
 socket.on("activity", (name) => {
     activity.textContent = `${name} is typing...`
 
-    // Clear after 3 seconds 
+    // Clear after 2 seconds 
     clearTimeout(activityTimer)
     activityTimer = setTimeout(() => {
         activity.textContent = ""
-    }, 3000)
+    }, 2000)
 })
 
 socket.on('userList', ({ users }) => {
-    showUsers(users)
-})
+    showUsers(users);
+});
 
 socket.on('roomList', ({ rooms }) => {
-    showRooms(rooms)
-})
+    showRooms(rooms);
+});
+
+// Function to display messages in the chat display
+function displayMessage(name, text) {
+    const li = document.createElement('li');
+    li.innerHTML = `<div class="post__header post__header--user">
+        <span class="post__header--name">${name}</span>
+    </div>
+    <div class="post__text">${text}</div>`;
+    document.querySelector('.chat-display').appendChild(li);
+    // Adjust scroll as needed
+}
+function sendMessage(e) {
+    e.preventDefault()
+    if (nameInput.value && msgInput.value && chatRoom.value) {
+        socket.emit('message', {
+            name: nameInput.value,
+            text: msgInput.value,
+            room: chatRoom.value, 
+        })
+        msgInput.value = "";
+    }
+    msgInput.focus()
+}
+
+function enterRoom(e) {
+    e.preventDefault()
+    if (nameInput.value && chatRoom.value) {
+        socket.emit('enterRoom', {
+            name: nameInput.value,
+            room: chatRoom.value
+        })
+    }
+}
+
 
 function showUsers(users) {
-    usersList.textContent = ''
+    usersList.innerHTML = '';
     if (users) {
-        usersList.innerHTML = `<em>Users in ${chatRoom.value}:</em>`
+        usersList.innerHTML = '<em>Users in ' + chatRoom.value + ':</em>';
         users.forEach((user, i) => {
-            usersList.textContent += ` ${user.name}`
-            if (users.length > 1 && i !== users.length - 1) {
-                usersList.textContent += ","
-            }
-        })
+            const listItem = document.createElement('li');
+            listItem.textContent = user.name;
+            usersList.appendChild(listItem);
+        });
     }
 }
 
 function showRooms(rooms) {
-    roomList.textContent = ''
+    roomList.innerHTML = '';
     if (rooms) {
-        roomList.innerHTML = '<em>Active Rooms:</em>'
+        // roomList.innerHTML = '<em>Active Rooms:</em>';
         rooms.forEach((room, i) => {
-            roomList.textContent += ` ${room}`
-            if (rooms.length > 1 && i !== rooms.length - 1) {
-                roomList.textContent += ","
-            }
-        })
+            const listItem = document.createElement('li');
+            listItem.textContent = room;
+            roomList.appendChild(listItem);
+        });
     }
 }
+  
     </script>
 </body>
 

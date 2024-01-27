@@ -11,8 +11,14 @@ const http = require('http').createServer(app);
 const { Server } = require('socket.io');
 const io = new Server(http,{});
 const Like = require('./models/Like');
+const Room = require('./models/Room');
+const User = require('./models/User');
+const Message = require('./models/Messages');
 const {ObjectId}=require('mongodb')
 require('./config/passport')(passport);
+const chatFeature=require('./controller/chatFeature');
+const ADMIN = "Admin"
+
 
 // Database configure
 const db=require('./config/keys').MongoURI;
@@ -58,7 +64,7 @@ app.use('/users',require('./routes/users.js'));
 
 
 io.on("connection",function(socket){
-  console.log('User Connected');
+  console.log(`'User Connected'`);
 
   socket.on("new_comment",function(comment){
     io.emit("new_comment",comment);
@@ -109,9 +115,120 @@ socket.on("dislike", async function(data){
         dislikes:dislikes
     });
 });
+// Upon connection - only to user 
+socket.emit('message', chatFeature.buildMsg(ADMIN, "Welcome to Chat Room!"))
+
+socket.on('enterRoom', async ({ name, room }) => {
+
+    // leave previous room 
+    const prevRoom = chatFeature.getUser(socket.id)?.room
+
+    if (prevRoom) {
+        socket.leave(prevRoom)
+        io.to(prevRoom).emit('message', chatFeature.buildMsg(ADMIN, `${name} has left the room`))
+    }
+
+    const user = chatFeature.activateUser(socket.id, name, room)
+
+    // Cannot update previous room users list until after the state update in activate user 
+    if (prevRoom) {
+        await Room.findOneAndUpdate({ name: prevRoom }, { $pull: { users: user._id } });
+     
+        io.to(prevRoom).emit('userList', {
+            users: chatFeature.getUsersInRoom(prevRoom)
+        })
+    }
+
+    // join room 
+    socket.join(user.room)
+    await Room.findOneAndUpdate({ name: user.room }, { $addToSet: { users: user._id } });
+    // To user who joined 
+    socket.emit('message', chatFeature.buildMsg(ADMIN, `You have joined the ${user.room} chat room`))
+// Message event with MongoDB operations
+socket.on('message', async ({ name, text }) => {
+    const room = chatFeature.getUser(socket.id)?.room;
+
+    const roomName = chatFeature.getUser(socket.id)?.room;
+
+    if (roomName) {
+        // Check if the room exists
+        let room = await Room.findOne({ name: roomName });
+
+        // If the room doesn't exist, create it
+        if (!room) {
+            room = await Room.create({ name: roomName });
+        }
+        // Create the message
+        const user = await User.findOne({ name: name });
+        const message = new Message({
+            content: text,
+            room: room._id,
+            sender: user._id,
+        });
+
+        await message.save();
+
+        io.to(room._id).emit('message', chatFeature.buildMsg(name, text));
+    }
+  });
+
+    // To everyone else 
+    socket.broadcast.to(user.room).emit('message', chatFeature.buildMsg(ADMIN, `${user.name} has joined the room`))
+
+    // Update user list for room 
+    io.to(user.room).emit('userList', {
+        users: chatFeature.getUsersInRoom(user.room)
+    })
+
+    // Update rooms list for everyone 
+    io.emit('roomList', {
+        rooms: chatFeature.getAllActiveRooms()
+    })
+})
+
+// 
+
+// When user disconnects - to all others const count = io.engine.clientsCount;
+// const count2 = io.of("/").sockets.size;
+// console.log({'count':count,'count2':count2})
+socket.on('disconnect', () => {
+    const user = chatFeature.getUser(socket.id)
+    chatFeature.userLeavesApp(socket.id)
+
+    if (user) {
+        io.to(user.room).emit('message', chatFeature.buildMsg(ADMIN, `${user.name} has left the room`))
+
+        io.to(user.room).emit('userList', {
+            users: chatFeature.getUsersInRoom(user.room)
+        })
+
+        io.emit('roomList', {
+            rooms: chatFeature.getAllActiveRooms()
+        })
+    }
+
+    console.log(`User ${socket.id} disconnected`)
+})
+
+// Listening for a message event 
+socket.on('message', ({ name, text }) => {
+    const room = chatFeature.getUser(socket.id)?.room
+    if (room) {
+        io.to(room).emit('message', chatFeature.buildMsg(name, text))
+    }
+})
+
+// Listen for activity 
+socket.on('activity', (name) => {
+    const room = chatFeature.getUser(socket.id)?.room
+    if (room) {
+        socket.broadcast.to(room).emit('activity', name)
+    }
+})
+})
 
 
-});
+
 
   const PORT=process.env.PORT||8080
   http.listen(PORT,()=>{

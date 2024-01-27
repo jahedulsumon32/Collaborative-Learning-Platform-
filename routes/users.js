@@ -10,7 +10,8 @@ const multer=require('multer');
 const User = require("../models/User");
 const Post = require("../models/Post");
 const Like = require("../models/Like");
-
+const Room = require('../models/Room'); 
+const Message = require('../models/Messages');
 
 // Setting Up multer to upload image or file 
 const storage=multer.diskStorage({
@@ -190,19 +191,6 @@ router.post("/delete-post/:id", checkauthenticated, async (req, res) => {
 router.post("/register", checkNotauthenticated, async (req, res) => {
   const { name, email, password, password2 } = req.body;
   let errors = [];
-
-  //checking function if mailbox is exists or not
-  // async function isEmailValid(email) {
-  //   return emailValidator.validate(email);
-  // }
-  
-  // // check required fields
-  // const { valid, reason, validators } = await isEmailValid(email);
-  // if (!valid) {
-  //   errors.push({
-  //     msg: "please provide a correct email.Provided email mailbox is not found",
-  //   });
-  // }
   if (!name || !email || !password || !password2) {
     errors.push({ msg: "Please filled required field" });
   }
@@ -350,6 +338,19 @@ router.post("/post/:id/comment", async (req, res) => {
     res.redirect("/");
   });
 });
+router.get("/chat",  checkauthenticated, async(req, res) => {
+  try {
+    // Fetch all rooms
+    const rooms = await Room.find();
+    res.render("chat",{ user: req.user, rooms:rooms });
+   
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+ 
+});
+
 
 router.post("/login", checkNotauthenticated, (req, res, next) => {
   passport.authenticate("local", {
