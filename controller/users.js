@@ -264,6 +264,7 @@ router.post("/editProfile",checkauthenticated,upload.single('image'),async(req,r
         {_id:req.body.user_id},
         {
         name: req.body.name,
+        designation: req.body.designation,
         email: req.body.email,
         mobile: req.body.mobile,
         language: req.body.language,
@@ -281,6 +282,7 @@ router.post("/editProfile",checkauthenticated,upload.single('image'),async(req,r
         {_id:req.body.user_id},
         {
         name: req.body.name,
+        designation: req.body.designation,
         email: req.body.email,
         mobile: req.body.mobile,
         language: req.body.language,

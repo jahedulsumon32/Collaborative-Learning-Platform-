@@ -27,7 +27,7 @@
                             Unknown User
                           <% } %>
                         </span> 
-                        <small class="text-primary">Student</small> 
+                        <small class="text-primary"><%= user.designation %></small> 
                       </div>
                     </div>
                     <div class="d-flex flex-row mt-1 ellipsis"> 
@@ -39,6 +39,7 @@
                     </div>
                   </div>
                   <div class="p-2">
+                    <p class="text-justify"><b><%= post.title%></b></p>
                     <% if (post.desc && post.desc.length && post.desc.length <= 200) { %>
                       <p class="text-justify"><%= post.desc %></p>
                       <button class="see-more-button"><a href="/eachPost/<%= post._id %>">See Details</a></button>
