@@ -39,6 +39,7 @@
                     </div>
                   </div>
                   <div class="p-2">
+                    <p class="text-justify"><b><%= post.title%></b></p>
                     <% if (post.desc && post.desc.length && post.desc.length <= 200) { %>
                       <p class="text-justify"><%= post.desc %></p>
                       <button class="see-more-button"><a href="/eachPost/<%= post._id %>">See Details</a></button>
