@@ -92,6 +92,7 @@
       </div>
 
       <!-- Categories Widget -->
+<!-- Categories Widget -->
 <div class="card my-4">
   <h5 class="card-header">Categories</h5>
   <div class="card-body">
@@ -101,13 +102,14 @@
         <% categories.forEach(category => { %>
           <li>
             <!-- Update the anchor tag to include the category link -->
-            <a href="/welcome?category=<%= category %>" class="category-link" data-category="<%= category %>"><%= category %></a>
+            <a href="/welcome?category=<%= category %>" class="category-link" data-category="<%= category %>" style="color: blue; font-size: 20px;"><%= category %></a>
           </li>
         <% }); %>
       </ul>
     </div>
   </div>
 </div>
+
 
 <!-- /.row -->
 </div>
@@ -128,10 +130,9 @@
 <!-- Include jQuery library -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<!-- Your custom script -->
+<!-- custom script -->
 <script>
-  // Your existing JavaScript code for updating posting times
-  // ...
+ 
 
   // Function to handle See More/See Less functionality
   document.querySelectorAll('.see-more-button').forEach(function (button) {
