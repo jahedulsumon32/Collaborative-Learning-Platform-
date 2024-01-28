@@ -75,9 +75,9 @@
         <p class="post-content">There is nothing to show</p>
       <% } %>
     </div>
-
-    <!-- Sidebar Widgets Column -->
-    <div class="col-md-4 order-1 order-md-2">
+  <!-- Sidebar Widgets Column -->
+  <div class="col-md-4 order-1 order-md-2">
+    <div class="row">
       <!-- Search Widget -->
       <div class="card my-4">
         <h5 class="card-header">Search</h5>
@@ -91,24 +91,28 @@
         </div>
       </div>
 
-     <!-- Categories Widget -->
+      <!-- Categories Widget -->
 <div class="card my-4">
   <h5 class="card-header">Categories</h5>
   <div class="card-body">
-    <div class="row">
-      <div class="col-lg-6">
-        <ul class="list-unstyled mb-0">
-          {{#each categories}}
-            <li>
-              <a href="#" class="category-link" data-category="{{title}}">{{title}}</a>
-            </li>
-          {{/each}}
-        </ul>
-      </div>
+    <div class="col-lg-12">
+      <ul class="list-unstyled mb-0">
+        <!-- Display categories from post.ejs -->
+        <% categories.forEach(category => { %>
+          <li>
+            <!-- Update the anchor tag to include the category link -->
+            <a href="/welcome?category=<%= category %>" class="category-link" data-category="<%= category %>"><%= category %></a>
+          </li>
+        <% }); %>
+      </ul>
     </div>
   </div>
 </div>
 
+<!-- /.row -->
+</div>
+
+    
 
 
 </div>
@@ -151,20 +155,6 @@
     });
   });
 </script>
-<script>
-  $(document).ready(function() {
-    // Event handler for category links
-    $('.category-link').on('click', function(e) {
-      e.preventDefault();
 
-      // Get the category from the data attribute
-      var category = $(this).data('category');
-
-      // You can now use the 'category' variable to perform actions, such as filtering posts by category
-      console.log('Selected Category:', category);
-      // Perform additional logic, e.g., fetching posts for the selected category via AJAX
-    });
-  });
-</script>
 
 

@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema(
   {
+    category: {
+      type: String,
+      required: true,
+      enum: ["academic", "non-academic", "other"], // Add more as needed
+    },
     title: {
       type: String,
       required: true,

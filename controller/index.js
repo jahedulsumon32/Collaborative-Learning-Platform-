@@ -15,7 +15,12 @@ router.get("/welcome", ensureAuthenticated, async (req, res) => {
   const postsPerPage = 6; // Adjust as needed
 
   try {
-    const paginatedPosts = await Post.paginatePosts(currentPage, postsPerPage);
+    // Define or fetch categories from your data source
+    const categories = ["academic", "non-academic"];
+
+    const category = req.query.category;
+    const paginatedPosts = await Post.paginatePosts(currentPage, postsPerPage, category);
+
     // Calculate total pages dynamically based on the total number of posts and posts per page
     const totalPosts = await Post.countDocuments({});
     const totalPages = Math.ceil(totalPosts / postsPerPage);
@@ -25,12 +30,15 @@ router.get("/welcome", ensureAuthenticated, async (req, res) => {
       paginatedPosts,
       currentPage,
       totalPages,
+      selectedCategory: category,
+      categories: categories,
     });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error fetching posts");
   }
 });
+
 
 
 
@@ -42,9 +50,14 @@ router.get("/profile", (req, res) => res.render("profile", { user: req.user }));
 
 router.get("/about", (req, res) => res.render("about", { user: req.user }));
 
+
 router.get("/post", ensureAuthenticated, (req, res, next) => {
-  res.render("post", { user: req.user });
+  // Fetch categories from your data source or define them
+  const categories = ["academic", "non-academic"];
+
+  res.render("post", { user: req.user, categories: categories });
 });
+
 
 router.get("/eachPost/:id", ensureAuthenticated, (req, res, next) => {
   console.log(req.path);

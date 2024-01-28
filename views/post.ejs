@@ -5,17 +5,17 @@
     <h3>What's On Your Mind</h3><br>
   </div>
 
-  <!-- Category Selection Form -->
-  <form action="/users/post" method="POST">
-    <div class="form-group">
-      <label for="category">Select Category:</label>
-      <select class="form-control" id="category" name="category" required>
-        <option value="" disabled selected>Select a category</option>
-        <option value="academic">Academic</option>
-        <option value="non-academic">Non-Academic</option>
-      </select>
-    </div>
-
+<!-- Category Selection Form -->
+<form action="/users/post" method="POST">
+  <div class="form-group">
+    <label for="category">Select Category:</label>
+    <select class="form-control" id="category" name="category" required>
+      <option value="" disabled selected>Select a category</option>
+      <% categories.forEach(category => { %>
+        <option value="<%= category %>"><%= category %></option>
+      <% }); %>
+    </select>
+  </div>
     <!-- Title Form -->
     <div class="form-group">
       <label for="post-title" class="title">Title</label>
