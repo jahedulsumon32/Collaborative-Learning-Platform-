@@ -26,6 +26,9 @@ language:{
 country:{
     type:String
 },
+designation:{
+    type:String,
+},
 date:{
     type:Date,
     default:Date.now
