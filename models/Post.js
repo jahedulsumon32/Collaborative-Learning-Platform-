@@ -5,7 +5,7 @@ const postSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: ["academic", "non-academic", "other"], // Add more as needed
+      enum: ["Academic", "Non-Academic", "Other"], // Add more as needed
     },
     title: {
       type: String,
@@ -31,17 +31,22 @@ const postSchema = new mongoose.Schema(
 );
 
 // Add a static method to the Post model for pagination
-postSchema.statics.paginatePosts = async function (page = 1, limit = 3) {
+
+postSchema.statics.paginatePosts = async function (page = 1, limit = 3, category) {
   const skip = (page - 1) * limit;
 
-  const posts = await this.find()
-    .sort({ date: -1 }) // Sorting by date in descending order (most recent first)
+  const query = category ? { category } : {}; // Use category filter if provided
+
+  const posts = await this.find(query)
+    .sort({ date: -1 })
     .skip(skip)
     .limit(limit)
-    .populate("user", "name email image"); // Populate the 'user' field with 'name' and 'email and image'
+    .populate("user", "name email image");
 
   return posts;
 };
+
+
 
 const Post = mongoose.model("Post", postSchema);
 
