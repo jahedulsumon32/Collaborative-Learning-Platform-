@@ -142,6 +142,32 @@ socket.on('enterRoom', async ({ name, room }) => {
     // join room 
     socket.join(user.room)
     await Room.findOneAndUpdate({ name: user.room }, { $addToSet: { users: user._id } });
+
+
+    // Check if the room already exists
+    const existingRoom = await Room.findOne({ name: user.room });
+
+    if (existingRoom) {
+        // Room exists, retrieve previous messages
+        try {
+            const messages = await Message.find({ room: existingRoom._id })
+            .populate('sender', 'name')
+            .exec();
+            // console.log(messages)
+            io.to(user.room).emit('initialMessages', { messages });
+        } catch (error) {
+            console.error('Error retrieving messages:', error);
+        }
+    } else {
+        // Room doesn't exist, create a new one
+        try {
+            const newRoom = new Room({ name: user.room });
+            await newRoom.save();
+        } catch (error) {
+            console.error('Error creating new room:', error);
+        }
+    }
+
     // To user who joined 
     socket.emit('message', chatFeature.buildMsg(ADMIN, `You have joined the ${user.room} chat room`))
 // Message event with MongoDB operations
@@ -164,7 +190,7 @@ socket.on('message', async ({ name, text }) => {
             content: text,
             room: room._id,
             sender: user._id,
-        });
+             });
 
         await message.save();
 

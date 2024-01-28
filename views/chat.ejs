@@ -188,10 +188,10 @@
                             <button class='btn btn-success' id="join" type="submit" >Join</button>
                         </form>
                         <div class="room-list">
-                            <h4 style="color:#25ca1c;"><i class="fas fa-comments"></i> Active Room </h4>
+                            <h6 style="color:#25ca1c;"><i class="fas fa-comments"></i> Active Room </h6>
                             
                             <ul class="room-list"></ul>
-                            <h4 style="color:#53a285"><i class="fas fa-comments"></i> Room</h4>
+                            <h6 style="color:#53a285"><i class="fas fa-comments"></i> Room</h6>
                             <ul class="previous-room">
                             <%if(rooms.length>0){%>
                                 <% (rooms.forEach(room=>{%>
@@ -201,7 +201,7 @@
                             </ul>
                         </div>
                         <div class="active-users-room">
-                            <h4 style="color:#12bd3d;"><i class="fas fa-users"></i> Active Users</h4>
+                            <h6 style="color:#12bd3d;"><i class="fas fa-users"></i> Active Users</h6>
                             <ul class="user-list"></ul>
                         </div>
                       
@@ -248,14 +248,18 @@ msgInput.addEventListener('keypress', () => {
     socket.emit('activity', nameInput.value)
 })
 
+// Listen for initial messages
+socket.on('initialMessages', ({ messages }) => {
+    displayInitialMessages(messages);
+});
 // Listen for messages 
 socket.on("message", (data) => {
     activity.textContent = ""
     const { name, text, time } = data
     const li = document.createElement('li')
     li.className = 'post'
-    if (name === nameInput.value) li.className = 'post post--left'
-    if (name !== nameInput.value && name !== 'Admin') li.className = 'post post--right'
+    if (name === nameInput.value) li.className = 'post post--right'
+    if (name !== nameInput.value && name !== 'Admin') li.className = 'post post--left'
     if (name !== 'Admin') {
         li.innerHTML = `<div class="post__header ${name === nameInput.value
             ? 'post__header--user'
@@ -268,6 +272,7 @@ socket.on("message", (data) => {
     } else {
         li.innerHTML = `<div class="post__text">${text}</div>`
     }
+
     document.querySelector('.chat-display').appendChild(li)
 
     chatDisplay.scrollTop = chatDisplay.scrollHeight
@@ -349,7 +354,40 @@ function showRooms(rooms) {
         });
     }
 }
-  
+
+
+// Function to display initial messages in the chat display
+function displayInitialMessages(messages) {
+    // Clear existing content of the chat display
+    chatDisplay.innerHTML = '';
+
+    // Loop through the messages and display each one
+    messages.forEach(({sender, content, time }) => {
+        const li = document.createElement('li');
+        li.className = 'post';
+        const isCurrentUser = sender.name === nameInput.value; 
+
+        if (isCurrentUser) {
+            li.classList.add('post--right');
+        } else {
+            li.classList.add('post--left');
+        }
+
+        const headerClassName = isCurrentUser ? 'post__header--user' : 'post__header--reply';
+
+        li.innerHTML = `<div class="post__header ${headerClassName}">
+            <span class="post__header--name">${sender.name}</span> 
+            <span class="post__header--time">${time}</span> 
+            </div>
+            <div class="post__text">${content}</div>`;
+
+        chatDisplay.appendChild(li);
+        chatDisplay.scrollTop = chatDisplay.scrollHeight;
+    });
+}
+
+
+
     </script>
 </body>
 
