@@ -10,19 +10,18 @@ router.get("/login", (req, res) => {
 router.get("/register", (req, res) => {
   res.render("register");
 });
+
+
 router.get("/welcome", ensureAuthenticated, async (req, res) => {
   const currentPage = req.query.page || 1;
   const postsPerPage = 6; // Adjust as needed
 
   try {
-    // Define or fetch categories from your data source
-    const categories = ["academic", "non-academic"];
-
+    const categories = ["Academic", "Non-Academic", "Other"]; // Define or fetch categories from your data source
     const category = req.query.category;
     const paginatedPosts = await Post.paginatePosts(currentPage, postsPerPage, category);
 
-    // Calculate total pages dynamically based on the total number of posts and posts per page
-    const totalPosts = await Post.countDocuments({});
+    const totalPosts = await Post.countDocuments(category ? { category } : {});
     const totalPages = Math.ceil(totalPosts / postsPerPage);
 
     res.render("welcome", {
@@ -42,6 +41,7 @@ router.get("/welcome", ensureAuthenticated, async (req, res) => {
 
 
 
+
 router.get("/dashboards", ensureAuthenticated, async (req, res, next) => {
   res.render("dashboards", { user: req.user });
 });
@@ -53,7 +53,7 @@ router.get("/about", (req, res) => res.render("about", { user: req.user }));
 
 router.get("/post", ensureAuthenticated, (req, res, next) => {
   // Fetch categories from your data source or define them
-  const categories = ["academic", "non-academic"];
+  const categories = ["Academic", "Non-Academic", "Other"];
 
   res.render("post", { user: req.user, categories: categories });
 });
