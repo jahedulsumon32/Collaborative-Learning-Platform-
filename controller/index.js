@@ -70,4 +70,9 @@ router.get("/chat", ensureAuthenticated, (req, res) => {
 
 router.get('/editProfile',(req,res)=>res.render('editProfile',{user:req.user}));
 
+router.get('/summary',(req,res)=>{
+  const fetchedData = req.query.data;
+  res.render('summary',{user:req.user,fetchedData})
+})
+
 module.exports = router;
