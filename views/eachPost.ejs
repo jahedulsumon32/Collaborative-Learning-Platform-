@@ -23,7 +23,8 @@
             if (postDesc.length > 500) {
             const st = await fetchData(postDesc);
             console.log("FetchData response:", st);
-            alert(st);}
+            window.location.href = `/summary?data=${encodeURIComponent(st)}`;
+          }
             else{
               alert("Please read the whole blog. It is already a short blog.");
             }

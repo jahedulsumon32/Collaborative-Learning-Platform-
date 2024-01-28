@@ -302,20 +302,20 @@ router.post("/editProfile",checkauthenticated,upload.single('image'),async(req,r
 })
 router.post("/post", checkauthenticated, async (req, res, next) => {
   try {
-    const { title, desc } = req.body;
+    const { category, title, desc } = req.body;
     const newPost = new Post({
+      category,
       title,
       desc,
-      user: req.user._id, // Associate the post with the user's ID
+      user: req.user._id,
     });
     await newPost.save();
-    res.redirect("/welcome");
+    res.redirect(`/welcome?category=${category}`);
   } catch (error) {
     res.status(500).send("Error creating post");
   }
-
-  // res.send("post created success")
 });
+
 router.post("/post/:id/comment", async (req, res) => {
   // find out which post you are commenting
   const id = req.params.id;

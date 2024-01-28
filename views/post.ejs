@@ -1,20 +1,36 @@
-
 <%- include('./partials/home_nav.ejs')%>
-<div class="container">
-    <div class="main">
-       <h3> What's On your mind</h3>
-    </div>
-    <form action="/users/post" method="POST">
-        <label for="post-title" class="title">Title</label>
-        <input type="text" name="title" class="form-control" id="post-title" placeholder="" required>
-        
-        <label for="post-desc" class="desc">Content</label>
-       <textarea name="desc" style="height: 200px; column-gap: 2cm;" class="form-control" id="post-desc" name="editorContent" required></textarea><br>
-       <button type="submit" class="btn btn-success text-center">post</button>
-    </form>
 
+<div class="container">
+  <div class="main">
+    <h3>What's On Your Mind</h3><br>
   </div>
 
+<!-- Category Selection Form -->
+<form action="/users/post" method="POST">
+  <div class="form-group">
+    <label for="category">Select Category:</label>
+    <select class="form-control" id="category" name="category" required>
+      <option value="" disabled selected>Select a category</option>
+      <% categories.forEach(category => { %>
+        <option value="<%= category %>"><%= category %></option>
+      <% }); %>
+    </select>
+  </div>
+    <!-- Title Form -->
+    <div class="form-group">
+      <label for="post-title" class="title">Title</label>
+      <input type="text" name="title" class="form-control" id="post-title" placeholder="" required>
+    </div>
+
+    <!-- Content Form -->
+    <div class="form-group">
+      <label for="post-desc" class="desc">Content</label>
+      <textarea name="desc" style="height: 200px; column-gap: 2cm;" class="form-control" id="post-desc" name="editorContent" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success text-center">Post</button>
+  </form>
+</div>
 
 <%- include('./partials/footer.ejs')%>
 </body>
