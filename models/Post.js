@@ -11,7 +11,7 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    desc: String,
+    desc: String, // Store Quill-generated HTML here
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -32,7 +32,11 @@ const postSchema = new mongoose.Schema(
 
 // Add a static method to the Post model for pagination
 
-postSchema.statics.paginatePosts = async function (page = 1, limit = 3, category) {
+postSchema.statics.paginatePosts = async function (
+  page = 1,
+  limit = 3,
+  category
+) {
   const skip = (page - 1) * limit;
 
   const query = category ? { category } : {}; // Use category filter if provided
@@ -45,8 +49,6 @@ postSchema.statics.paginatePosts = async function (page = 1, limit = 3, category
 
   return posts;
 };
-
-
 
 const Post = mongoose.model("Post", postSchema);
 
