@@ -12,7 +12,7 @@ router.get("/register", (req, res) => {
 
 router.get("/welcome", ensureAuthenticated, async (req, res) => {
   const currentPage = req.query.page || 1;
-  const postsPerPage = 6; // Adjust as needed
+  const postsPerPage = 8; // Adjust as needed
 
   try {
     const categories = ["Academic", "Non-Academic", "Other"]; // Define or fetch categories from your data source
