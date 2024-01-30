@@ -41,13 +41,17 @@ Join us on this exciting journey of shared learning experiences!
 
 
 ## Installation
+1. Clone this project using: git clone https://github.com/jahedulsumon32/Collaborative-Learning-Platform-.git
+2. Install all dependencies stored in package.json file using: npm install
+3. Then, run the project using: nodemon app
+4. 'http://localhost:8080/users/login' use this url to login into our website
+5. That's it. Hope you like our web application.
 
 ### Table of Contents
 
   1.  Prerequisites
-  2.  Installation
-  3.  Configuration
-  4.  Database Setup
-  5.  Run Migrations
-  6.  Start the Application
-  7.  Access the Application
+  2.  Configuration
+  3.  Database Setup
+  4.  Run Migrations
+  5.  Start the Application
+  6.  Access the Application
